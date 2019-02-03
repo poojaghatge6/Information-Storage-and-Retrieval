@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="author" content="Colorlib">
+    <meta name="description" content="#">
+    <meta name="keywords" content="#">
+    <!-- Page Title -->
+    <title>Search Engine for Medical trials</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,500,700,900" rel="stylesheet">
+    <!-- Simple line Icon -->
+    <link rel="stylesheet" href="css/simple-line-icons.css">
+    <!-- Themify Icon -->
+    <link rel="stylesheet" href="css/themify-icons.css">
+    <!-- Hover Effects -->
+    <link rel="stylesheet" href="css/set1.css">
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <section class="slider d-flex align-items-center">
+        <div class="container">
+            <div class="row d-flex justify-content-center" style="margin-top: 260px">
+                <div class="col-md-12">
+                    <div class="slider-title_box">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="slider-content_wrap ">
+                                    <!-- <h1>Explore and </h1> -->
+                                    <h5>Let's dive into medical trials and scientific records.</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row d-flex justify-content-center">
+                            <div class="col-md-12">
+                                <form class="form-wrap ">
+                                    <div class="btn-group" role="group" aria-label="Basic example">
+                                        <input type="text" placeholder="What are you looking for?" class="btn-group1" autofocus id="queryWord">
+                                        <!-- <button type="submit" class="btn-form"><span class="icon-magnifier search-icon"></span>SEARCH<i class="pe-7s-angle-right"></i></button> -->
+                                        <button type="button" class="btn-form" onclick="search()"><span class="icon-magnifier search-icon"></span>SEARCH<i class="pe-7s-angle-right"></i></button>
+                                    </div>
+                                </form>
+                                <!-- <div class="slider-link">
+                                    <a href="#">Browse Popular</a><span>or</span> <a href="#">Recently Addred</a>
+                                </div> -->
+                                <form action="" style="margin-top:16px">
+                                        <input type="radio" name="datasource" value="trails" checked> <span style="color:#909090;">Medical trials</span>
+                                        <input type="radio" name="datasource" value="abstracts" style="margin-left:30px; color:#909090"> <span style="color:#909090;">Scientific abstracts</span>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row col-md-12 featured-responsive" style="margin-top:300px; margin-left:10px; margin-bottom: 350px">
+                <div class="col-md-12">
+                    <div class="styled-heading" style="margin-left:-30px;">
+                        <h3>Search with Filter</h3>
+                    </div>
+                </div>
+                <div class="detail-filter d-flex justify-content-center" style="margin-top:-20px; margin-left:10px;">
+                    <form class="filter-dropdown">
+                        <label for="inlineFormCustomSelect">Disease</label>
+                        <select class="custom-select mb-2 mr-sm-2 mb-sm-0" id="inlineFormCustomSelect">
+                            <option selected>None</option>
+                        </select>
+                    </form>
+                    <form class="filter-dropdown">
+                        <label for="inlineFormCustomSelect1">Age Group</label>
+                        <select class="custom-select mb-2 mr-sm-2 mb-sm-0" id="inlineFormCustomSelect1">
+                            <option selected>None</option>
+                        </select>
+                    </form>
+                    <form class="filter-dropdown">
+                        <label for="inlineFormCustomSelect2">Genes</label>
+                        <select class="custom-select mb-2 mr-sm-2 mb-sm-0" id="inlineFormCustomSelect2">
+                            <option selected>None</option>
+                        </select>
+                    </form>
+                    <button type="button" name="button" class="btn-form1" onclick="filterSearch()"><span class="icon-magnifier search-icon"></span>SEARCH<i class="pe-7s-angle-right"></i></button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+    <!-- jQuery, Bootstrap JS. -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="js/jquery-3.2.1.min.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+
+    <script>
+        $(window).scroll(function() {
+            // 100 = The point you would like to fade the nav in.
+            if ($(window).scrollTop() > 100) {
+                $('.fixed').addClass('is-sticky');
+            } else {
+                $('.fixed').removeClass('is-sticky');
+            };
+        });
+        var diseases = ['Colon cancer', 'Breast cancer', 'cholangiocarcinoma', 'Prostate cancer', 'Papillary thyroid carcinoma', 'Liposarcoma', 'Anaplastic large cell lymphoma', 'Esophageal cancer', 'Beast cancer', 'Basal cell carcinoma', 'Neuroblastoma', 'Lung adenocarcinoma', 'Melanoma', 'Pancreatic cancer', 'Medullary thyroid carcinoma', 'Non-small cell carcinoma', 'sarcoma', 'lung cancer', 'glioma', 'head and neck squamous cell carcinoma', 'adenoid cystic carcinoma', 'Gastric cancer', 'Pancreatic adenocarcinoma', 'Acute myeloid leukemia', 'Cervical cancer', 'Gastric cancer', 'Glioblastoma', 'Colorectal cancer', 'Ampullary carcinoma', 'Thyroid cancer', 'Melanoma', 'Gastrointestinal stromal tumor', 'Meningioma', 'Cholangiocarcinoma', 'Leukemia', 'Colorectal cancer', 'Pancreatic ductal adenocarcinoma', 'Lung cancer', 'Prostate cancer'];
+        var age_group = ['13-year-old male', '45-year-old female', '26-year-old male', '48-year-old female', '04-year-old female', '78-year-old female', '64-year-old male', '57-year-old female', '35-year-old male', '71-year-old female', '69-year-old female', '67-year-old female', '61-year-old female', '26-year-old female', '86-year-old female', '72-year-old male', '84-year-old male', '35-year-old female', '66-year-old female', '48-year-old male', '01-year-old male', '58-year-old female', '70-year-old male', '60-year-old female', '34-year-old female', '50-year-old male', '49-year-old female', '39-year-old female', '82-year-old male', '67-year-old male', '18-year-old male', '68-year-old male', '73-year-old male', '55-year-old male', '63-year-old female', '62-year-old female', '52-year-old male', '65-year-old female', '74-year-old female', '40-year-old female', '81-year-old male', '50-year-old female', '38-year-old male', '54-year-old male', '61-year-old male', '56-year-old female', '60-year-old male', '64-year-old female', '54-year-old female', '57-year-old male', '49-year-old male', '80-year-old male', '73-year-old female', '47-year-old male', '46-year-old female'];
+        var genes = ['RET', 'NF2 (K322), AKT1(E17K)', 'extensive tumor infiltrating lymphocytes', 'PTEN', 'KIT', 'FGFR1 Amplification', 'NRAS (Q61R)', 'PIK3CA (E545K)', 'tumor cells with >50% membranous PD-L1 expression', 'MET Amplification', 'BRAF', 'KRAS', 'KRAS, TP53', 'BRAF (V600R)', 'BRAF (K601E)', 'CDK4 Amplification', 'CDKN2A', 'EGFR', 'BRAF (V600E)', 'BRAF (V600E), CDKN2A Deletion', 'BRAF amplification', 'NRAS (Q61K)', 'ERBB2', 'RB1, TP53, KRAS', 'FLT3', 'EGFR (L858R)', 'NF1 truncation', 'ERBB3', 'STK11', 'KIT Exon 9 (A502_Y503dup)', 'PTEN Loss', 'NTRK1', 'NRAS Amplification', 'high tumor mutational burden', 'NRAS', 'KIT amplification', 'BRCA2', 'MET', 'EML4-ALK Fusion transcript', 'PTEN loss of function', 'ABL1', 'NRAS (Q61L)', 'high serum LDH levels', 'KIT (L576P), KIT amplification', 'BRAF (V600E), PTEN loss of function', 'BRAF (V600K)', 'APC loss of function', 'PTEN Inactivating', 'CDK6', 'IDH1 (R132H)', 'tumor cells negative for PD-L1 expression', 'no tumor infiltrating lymphocytes', 'MDM2', 'ALK Fusion', 'KIT (L576P)', 'KIT (K642E)', 'ALK', 'ROS1', 'NTRK1 rearrangement', 'ERBB2 Amplification', 'PTCH1', 'CDK6 Amplification', 'BRAF (V600E), NRAS (Q61R)', 'MDM2 Amplification', 'TP53 loss of function', 'FGFR1', 'KIT (N822Y)', 'IDH1', 'FGFR1 Amplification, PTEN (Q171)', 'KRAS (G13D), BRAF (V600E)', 'KRAS (G12C)'];
+
+        function search() {
+            var radioValue = $("input[name='datasource']:checked").val();
+            var query = document.getElementById('queryWord').value;
+            console.log('Go search '+query);
+            $(location).attr('href','./listing.html?query='+query+'&source='+radioValue+'&type=input');
+        }
+        function filterSearch(){
+            console.log("ewqe");
+            var v1 = (getSelectedText('inlineFormCustomSelect') == 'None')?"":getSelectedText('inlineFormCustomSelect');
+            var v2 = (getSelectedText('inlineFormCustomSelect1') == 'None')?"":getSelectedText('inlineFormCustomSelect1');
+            var v3 = (getSelectedText('inlineFormCustomSelect2') == 'None')?"":getSelectedText('inlineFormCustomSelect2');
+			console.log(v1+" "+v2+" "+v3);
+            $(location).attr('href','./listing.html?query='+v1+'&query2='+v2+'&query3='+v3+'&source=trails&type=filter');
+        }
+
+        function getSelectedText(elementId) {
+            var elt = document.getElementById(elementId);
+
+            if (elt.selectedIndex == 1)
+                return "";
+            return elt.options[elt.selectedIndex].text;
+        }
+
+        addoptions();
+        function addoptions() {
+
+            var menus = ['inlineFormCustomSelect', 'inlineFormCustomSelect1', 'inlineFormCustomSelect2'];
+            var contents = [diseases.sort(), age_group.sort(), genes.sort()];
+            for ( j = 0 ; j < menus.length ; j++) {
+                select = document.getElementById(menus[j]);
+                for (i = 0 ; i<contents[j].length ; i++) {
+                    select.options[select.options.length] = new Option(contents[j][i], contents[j][i]);
+                }
+            }
+        }
+        
+    </script>
+</body>
+
+</html>

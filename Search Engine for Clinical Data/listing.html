@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="author" content="Colorlib">
+    <meta name="description" content="#">
+    <meta name="keywords" content="#">
+    <!-- Favicons -->
+    <link rel="shortcut icon" href="#">
+    <!-- Page Title -->
+    <title>Search Engine for Medical trails</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,500,700,900" rel="stylesheet">
+    <!-- Simple line Icon -->
+    <link rel="stylesheet" href="css/simple-line-icons.css">
+    <!-- Themify Icon -->
+    <link rel="stylesheet" href="css/themify-icons.css">
+    <!-- Hover Effects -->
+    <link rel="stylesheet" href="css/set1.css">
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body style="background:#f3f4f7">
+    <!--============================= DETAIL =============================-->
+    <section>
+        <div class="container-fluid">
+            <div class="row d-flex justify-content-center" style="margin-top:24px">
+                <div class="col-md-9">
+                    <form class="form-wrap ">
+                        <div class="btn-group" role="group" aria-label="Basic example">
+                            <input type="text" placeholder="What are you looking for?" class="btn-group1" id="queryWordSearch">
+                            <!-- <button type="submit" class="btn-form"><span class="icon-magnifier search-icon"></span>SEARCH<i class="pe-7s-angle-right"></i></button> -->
+                            <button type="button" class="btn-form" onclick="search()"><span class="icon-magnifier search-icon"></span>SEARCH<i class="pe-7s-angle-right"></i></button>
+                        </div>
+                    </form>
+                    <form action="" style="margin-top:16px">
+                            <input type="radio" name="datasource" value="trails" id="trails"> <span style="color:#909090;">Medical trails</span>
+                            <input type="radio" name="datasource" value="abstracts" id="abstracts" style="margin-left:30px; color:#909090"> <span style="color:#909090;">Scientific abstracts</span>
+                    </form>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12 responsive-wrap">
+                    <div class="row detail-filter-wrap light-bg">
+                        <div class="col-sm-9 col-lg-9 col-xl-9 featured-responsive">
+                                <p><span id="resultNum"></span> Results For <span id="queryword">QUERY</span></p>
+                        </div>
+                    </div>
+                    <div id="result-div">
+                    </div>
+                </div>
+            </div>
+
+            <nav aria-label="Page navigation example" style="margin-bottom:80px">
+              <div id="pagination-div">
+
+              </div>
+            </nav>
+        </div>
+    </section>
+    <!--//END DETAIL -->
+
+    <!-- jQuery, Bootstrap JS. -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="js/jquery-3.2.1.min.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+
+    <script>
+      var cur_page = 0;  // current page
+      var unit = 10;
+      var result;
+      var pages;
+
+      var query;
+      var data_source;
+      render();
+
+      function search() {
+        var tmp = getUrlVars();
+        console.log('dqwd');
+        query1 = document.getElementById('queryWordSearch').value;
+        data_source = $("input[name='datasource']:checked").val();
+        if(tmp['type'] == 'filter') {
+        //     // TODO:
+            arr = query1.split("+");
+            console.log(arr);
+            $(location).attr('href','./listing.html?query='+arr[0]+'&query2='+arr[1]+'&query3='+arr[2]+'&source='+data_source+'&type=filter');
+        } else {
+            $(location).attr('href','./listing.html?query='+query+'&source='+data_source+'&type=input');
+        }
+      }
+
+      function render() {
+          var tmp = getUrlVars(); //
+          query = tmp['query'];
+
+          if(query.search("%20")>0)
+               query = replaceAll(query, "%20", " ");
+          data_source = tmp['source']
+          if(data_source == 'abstracts') {
+            document.getElementById("abstracts").checked = true;
+          } else {
+            document.getElementById("trails").checked = true;
+          }
+          if (tmp['type'] == 'filter') {
+            retrieveDataFilter();
+            document.getElementById('queryWordSearch').value = collectQuery();//query+"+"+replaceAll(tmp['query2'], "%20", " ")+"+"+replaceAll(tmp['query3'], "%20", " ");
+            console.log(query);
+          } else {
+            retrieveData();
+            document.getElementById('queryWordSearch').value = query;
+            console.log(query);
+          }
+        }
+
+        function retrieveDataFilter() {
+            var tmp = getUrlVars();
+            $.ajax({
+                url: "./index.php?query="+tmp['query']+'&query1='+tmp['query2']+'&query3='+tmp['query3']+"&source="+data_source
+                }).done(function(data) {
+                    console.log(data);
+                    result = JSON.parse(data);
+                    // // console.log(result);
+                    // console.log(result[0]);
+                    pages = Math.ceil(result.length / unit);
+                    // renderContent(cur_page);
+                    renderPagination(cur_page);
+                    document.getElementById('resultNum').innerHTML = result.length;
+                    document.getElementById('queryword').innerHTML = collectQuery();//query+"+"+replaceAll(tmp['query2'], "%20", " ")+"+"+replaceAll(tmp['query3'], "%20", " ");
+				});
+        }
+
+        function retrieveData() {
+            $.ajax({
+                url: "./index.php?query="+query+"&source="+data_source
+                }).done(function(data) {
+                    console.log(data);
+                    result = JSON.parse(data);
+                    // // console.log(result);
+                    // console.log(result[0]);
+                    pages = Math.ceil(result.length / unit);
+                    // renderContent(cur_page);
+                    renderPagination(cur_page);
+                    document.getElementById('resultNum').innerHTML = result.length;
+                    document.getElementById('queryword').innerHTML = query;
+                });
+        }
+
+        function replaceAll(str, find, replace) {
+            return str.replace(new RegExp(find, 'g'), replace);
+        }
+
+        function collectQuery() {
+            var tmp = getUrlVars();
+            var result = '';
+            // query+"+"+replaceAll(tmp['query2'], "%20", " ")+"+"+replaceAll(tmp['query3'], "%20", " ")
+            if (query.length>0){
+                result += query;
+            }
+            if( replaceAll(tmp['query2'], "%20", " ").length > 0 && result.length > 0) {
+                if (result.length > 0) result +="+";
+                result += replaceAll(tmp['query2'], "%20", " ");
+            }
+            if( replaceAll(tmp['query3'], "%20", " ").length > 0 && result.length > 0) {
+                if (result.length > 0) result +="+";
+                result += replaceAll(tmp['query3'], "%20", " ");
+            }
+            return result;
+
+        }
+
+      function renderContent(idx) {
+          var list ='';
+          for ( i = idx*unit ; i < idx*unit+unit ; i++) {
+              if ( i < result.length) {
+                  var pTtile = (data_source == 'trails') ? replaceAll(result[i]['brief_title'], " ", "%20") : replaceAll(result[i]['title'], " ", "%20");
+                  var pContent = (data_source == 'trails') ? result[i]['detailed_description']:result[i]['abstract'];//replaceAll(result[i]['detailed_description'], " ", "%20") : replaceAll(result[i]['abstract'], " ", "%20");
+                  var showTitle = (data_source == 'trails') ? result[i]['brief_title'] : result[i]['title'];
+                  var showContent = (data_source == 'trails') ? result[i]['brief_summary'] : result[i]['abstract'];
+                  showContent = processStr(showContent);
+                  start = "<div class='row light-bg detail-options-wrap d-flex justify-content-center'><div class='col-sm-9 col-lg-9 col-xl-9 featured-responsive'><div class='featured-place-wrap'>";
+                  content = "<a href='detail.html?title="+pTtile+"&content="+pContent+"'><div class='featured-title-box'><h6 class='title'>"+showTitle+"</h6><p>"+showContent+"</p>";
+                  end = "</div></a></div></div></div>";
+                  list = list + start + content + end;
+                  console.log(showContent);
+              }
+          }
+          document.getElementById('result-div').innerHTML = list;
+      }
+
+      function processStr(str) {
+          console.log(query)
+          var arr = str.split(".");
+          console.log(arr.length);
+          if(arr.length>0) {
+              for ( j = 0 ; j < arr.length ; j++) {
+                var sentence = arr[j];
+                if (sentence.search(query) > -1) {
+                    return replaceAll(sentence, query, '<span>'+query+'</span>')+'.';
+                }
+              }
+          }
+        return arr[0]+".";
+      }
+
+      function renderPagination(idx) {
+          cur_page = idx;
+          clearPage();
+          renderContent(cur_page);
+          console.log('Now is: '+idx);
+          var start = "<ul class='pagination justify-content-center'>";
+          var content = '';
+
+          for ( i = 0 ; i < pages ; i++) {
+            if ( i == 0 && idx == 0 ) {
+                content = "<li class='page-item disabled'><a class='page-link' href='#'>Previous</a></li>" ;
+            } else if (i == 0) {
+                content = "<li class='page-item'><a class='page-link' href='javascript:renderPagination("+(idx-1)+")'>Previous</a></li>" ;
+            }
+            var disable = "";
+            if (i == idx) {
+                disable = "disabled";
+            }
+            content = content+"<li class='page-item "+ disable +"'><a class='page-link' href='javascript:renderPagination("+(i)+")'>"+(i+1)+"</a></li>"
+
+            if (i==pages-1) {
+                if (i==idx) {
+                    content = content+"<li class='page-item disabled'><a class='page-link' href='#'>Next</a></li>" ;
+                } else {
+                    var nextPage = idx+1;
+                    content = content+"<li class='page-item'><a class='page-link' href='javascript:renderPagination("+nextPage+")'>Next</a></li>" ;
+                }
+            }
+          }
+          var end = "</ul>";
+          document.getElementById('pagination-div').innerHTML = start + content + end;
+      }
+
+      function clearPage() {
+         // console.log('clear content');
+         window.scrollTo(0, 0);
+        document.getElementById('result-div').innerHTML = '';
+      }
+
+      function getUrlVars() {
+          var vars = {};
+          var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(m,key,value) {
+              vars[key] = value;
+          });
+          return vars;
+      }
+    </script>
+</body>
+</html>
